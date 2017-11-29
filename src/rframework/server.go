@@ -1,4 +1,4 @@
-package restframework
+package rframework
 
 import (
     "net/http"
@@ -16,7 +16,7 @@ type Server interface {
     Start() error
 }
 
-type RestServer struct {
+type restServer struct {
     Bind string
 
     Port int
@@ -35,8 +35,8 @@ type RestServer struct {
     innerMapper map[string]map[string]interface{}
 }
 
-func NewRestServer(bind string, port int, mapper map[string]interface{}) *RestServer {
-    restServer := &RestServer{Bind: bind, Port: port, Mapper: mapper}
+func NewServer(bind string, port int, mapper map[string]interface{}) Server {
+    restServer := &restServer{Bind: bind, Port: port, Mapper: mapper}
 
     /*construct the url mapper*/
     restServer.innerMapper = make(map[string]map[string]interface{})
@@ -90,14 +90,14 @@ func contains(slice []string, s string) bool {
     return false
 }
 
-func (srv *RestServer) Start() error {
+func (srv *restServer) Start() error {
     for k, v := range srv.innerMapper {
         http.HandleFunc(k, srv.getHandler(k, v))
     }
     return http.ListenAndServe(srv.Bind+":"+strconv.Itoa(srv.Port), nil)
 }
 
-func (srv *RestServer) getHandler(pattern string, m map[string]interface{}) func(http.ResponseWriter, *http.Request) {
+func (srv *restServer) getHandler(pattern string, m map[string]interface{}) func(http.ResponseWriter, *http.Request) {
 
     return func(writer http.ResponseWriter, request *http.Request) {
         request.ParseForm()
