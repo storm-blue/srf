@@ -1,10 +1,12 @@
-package rframework
+package srf
 
 import (
     "time"
+    "github.com/satori/go.uuid"
+    "sync"
 )
 
-var sessionContext = make(map[string]Session)
+var sessionContext sync.Map
 
 type Session interface {
     GetId() string
@@ -32,5 +34,24 @@ func (session *defaultSession) GetAttribute(key string) interface{} {
 }
 
 func (session *defaultSession) Invalid() {
-    delete(sessionContext, session.GetId())
+    sessionContext.Delete(session.GetId())
+}
+
+func CreateSession() Session {
+    id := getUuid()
+    session := &defaultSession{id: id, createTime: time.Now(), attributes: make(map[string]interface{})}
+    sessionContext.Store(id, session)
+    return session
+}
+
+func GetSession(id string) Session {
+    session, _ := sessionContext.Load(id)
+    if session == nil {
+        return nil
+    }
+    return session.(Session)
+}
+
+func getUuid() string {
+    return uuid.NewV4().String()
 }
