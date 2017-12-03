@@ -1,12 +1,9 @@
 # simple-rest-framework
-A simple framework of restful api.
-With this, you can start a web application easily.
+A simple framework for restful web app developers.
+You can start a restful web application with the follow steps easily.
 
-example:
+step1:
 ```
-import "fmt"
-import "../srf"
-
 var MAPPER = map[string]interface{}{
 
     "GET /books":
@@ -31,6 +28,13 @@ var MAPPER = map[string]interface{}{
     },
 }
 ```
+step2:
 ```
-
+func main() {
+    server := srf.NewServer("127.0.0.1", 8080, controller.MAPPER)
+    e := server.Start()
+    if e != nil {
+        println(e.Error())
+    }
+}
 ```
