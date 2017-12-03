@@ -1,4 +1,4 @@
-# simple-rest-framework
+# srf
 A simple framework for restful web app developers.
 You can start a restful web application with the follow steps easily.
 
