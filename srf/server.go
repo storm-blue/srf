@@ -10,19 +10,15 @@ import (
 	"strings"
 )
 
-var METHODS = []string{"GET", "POST", "PUT", "DELETE"}
-
 type Server interface {
 	Start() error
+	Register(nameSpace string, mapper map[string]interface{})
 }
 
 type restServer struct {
 	Bind string
 
 	Port int
-
-	Mapper map[string]interface{}
-
 	/*
 	   {
 	       "/books" :
@@ -35,53 +31,14 @@ type restServer struct {
 	metadata map[string]map[string]*restFuncMeta
 }
 
-func getUriAndMethod(k string) (string, string) {
-	var uri string
-	var method string
-	s := strings.Split(k, " ")
-	if len(s) == 1 {
-		uri = s[0]
-	} else if len(s) == 2 {
-		method = s[0]
-		uri = s[1]
-	} else {
-		panic("Wrong mapper key: \"" + k + "\"")
-	}
-	return uri, method
-}
-
-func getMappers() map[string]interface{} {
-	var mappers = make(map[string]interface{})
-	for nameSpace, mapper := range Routers {
-		for k, handler := range mapper {
-			uri, method := getUriAndMethod(k)
-			var url string
-			if strings.HasPrefix(uri, RootPath) {
-				url = nameSpace + uri[1:]
-			} else {
-				url = nameSpace + uri
-			}
-
-			if method == "" {
-				mappers[url] = handler
-			} else {
-				mappers[method+" "+url] = handler
-			}
-
-		}
-	}
-	return mappers
-}
-
 func NewServer(bind string, port int) Server {
+	return &restServer{Bind: bind, Port: port}
+}
 
-	mapper := getMappers()
-
-	restServer := &restServer{Bind: bind, Port: port, Mapper: mapper}
-
+func initServer(restServer *restServer) {
 	/*construct the url mapper*/
 	restServer.metadata = make(map[string]map[string]*restFuncMeta)
-	for k, v := range mapper {
+	for k, v := range Routers {
 
 		s := strings.Split(k, " ")
 
@@ -106,7 +63,6 @@ func NewServer(bind string, port int) Server {
 			restServer.metadata[s[1]][s[0]] = getFuncMeta(v)
 		}
 	}
-	return restServer
 }
 
 func contains(slice []string, s string) bool {
@@ -119,6 +75,7 @@ func contains(slice []string, s string) bool {
 }
 
 func (srv *restServer) Start() error {
+	initServer(srv)
 	for k, v := range srv.metadata {
 		http.HandleFunc(k, srv.getHandler(v))
 	}

@@ -5,8 +5,8 @@ import "srf/srf"
 
 var BookMapper = map[string]interface{}{
 
-	"GET user/books": func(book Book) Response {
-		return Response{Code: "000000", Message: "BOOKS OK!"}
+	"GET /books": func(book Book) Response {
+		return Response{Code: "000001", Message: "BOOKS OK!"}
 	},
 
 	"POST books": func(book Book) Response {
@@ -24,11 +24,10 @@ var BookMapper = map[string]interface{}{
 	},
 }
 
-
 var UserMapper = map[string]interface{}{
 
 	"GET /books": func(book Book) Response {
-		return Response{Code: "000000", Message: "BOOKS OK!"}
+		return Response{Code: "000002", Message: "BOOKS OK!"}
 	},
 
 	"POST books": func(book Book) Response {
