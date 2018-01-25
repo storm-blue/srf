@@ -21,6 +21,9 @@ func (_ *restServer) Register(nameSpace string, mapper map[string]interface{}) {
 				register(v, nameSpace, uri, handler)
 			}
 		} else {
+			if !contains(METHODS, method) {
+				panic("Unknown method type: " + method)
+			}
 			register(method, nameSpace, uri, handler)
 		}
 	}

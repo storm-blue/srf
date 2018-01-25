@@ -39,29 +39,12 @@ func initServer(restServer *restServer) {
 	/*construct the url mapper*/
 	restServer.metadata = make(map[string]map[string]*restFuncMeta)
 	for k, v := range Routers {
-
 		s := strings.Split(k, " ")
 
-		/* process key like "/books" */
-		if len(s) == 1 {
-			if restServer.metadata[s[0]] == nil {
-				restServer.metadata[s[0]] = make(map[string]*restFuncMeta)
-			}
-			for _, m := range METHODS {
-				if restServer.metadata[s[0]][m] == nil {
-					restServer.metadata[s[0]][m] = getFuncMeta(v)
-				}
-			}
-		} else /* process key like "POST /books" */ if len(s) == 2 {
-			if !contains(METHODS, s[0]) {
-				panic("Unknown method type: " + s[0])
-			}
-
-			if restServer.metadata[s[1]] == nil {
-				restServer.metadata[s[1]] = make(map[string]*restFuncMeta)
-			}
-			restServer.metadata[s[1]][s[0]] = getFuncMeta(v)
+		if restServer.metadata[s[1]] == nil {
+			restServer.metadata[s[1]] = make(map[string]*restFuncMeta)
 		}
+		restServer.metadata[s[1]][s[0]] = getFuncMeta(v)
 	}
 }
 
