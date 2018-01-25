@@ -4,7 +4,7 @@ You can start a restful web application with the follow steps easily.
 
 step1:
 ```
-var MAPPER = map[string]interface{}{
+var BookMapper = map[string]interface{}{
 
     "GET /books":
     func(book Book) Response {
@@ -31,7 +31,8 @@ var MAPPER = map[string]interface{}{
 step2:
 ```
 func main() {
-    server := srf.NewServer("127.0.0.1", 8080, controller.MAPPER)
+    server := srf.NewServer("127.0.0.1", 8080)
+    server.Register("/book", controller.BookMapper)
     e := server.Start()
     if e != nil {
         println(e.Error())
