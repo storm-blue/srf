@@ -1,7 +1,7 @@
 package controller
 
 import "fmt"
-import "srf/srf"
+import "github.com/zhangyueshan/srf/srf"
 
 var BookMapper = map[string]interface{}{
 

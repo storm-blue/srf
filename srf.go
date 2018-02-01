@@ -1,8 +1,8 @@
 package main
 
 import (
-	"srf/controller"
-	"srf/srf"
+	"github.com/zhangyueshan/srf/controller"
+	"github.com/zhangyueshan/srf/srf"
 )
 
 func main() {
